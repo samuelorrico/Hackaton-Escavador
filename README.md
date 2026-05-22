@@ -62,6 +62,28 @@ Na **primeira inicialização**, o backend processa os dados (~3–5 min). As re
 
 ---
 
+## Atalhos (make)
+
+O `Makefile` na raiz consolida os comandos de setup, dev e testes.
+
+> **Windows:** `make` não vem instalado. Use `choco install make` / `scoop install make`, ou rode via git-bash/WSL.
+
+| Comando | O que faz |
+|---|---|
+| `make` ou `make help` | Lista todos os comandos disponíveis |
+| `make setup` | Instala dependências do backend e do frontend |
+| `make dev` | Sobe back **e** front juntos, em duas janelas (Windows) |
+| `make dev-back` | Sobe só a API FastAPI (`uvicorn --reload`) |
+| `make dev-front` | Sobe só o frontend Vite (`localhost:5173`) |
+| `make test` | Roda os testes do backend e do frontend |
+| `make lint` | Roda o eslint no frontend |
+| `make build` | Build de produção do frontend |
+| `make train` | Treina os modelos de IA |
+
+`make dev` abre back e front em **duas janelas** (usa `start` do Windows). Em git-bash/WSL, rode `make dev-back` e `make dev-front` em terminais separados.
+
+---
+
 ## Estrutura
 
 ```
