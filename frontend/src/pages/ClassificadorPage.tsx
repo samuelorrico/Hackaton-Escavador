@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, CartesianGrid, Cell } from 'recharts'
-import { ShieldAlert, ShieldCheck, ShieldOff, Flame } from 'lucide-react'
+import { ShieldAlert, ShieldCheck, Flame } from 'lucide-react'
 import { useApi } from '../hooks/useApi'
 import { RiskLevelBadge } from '../components/ui/RiskLevelBadge'
 import { LoadingSpinner } from '../components/ui/LoadingSpinner'
@@ -143,7 +143,7 @@ export function ClassificadorPage() {
               <Tooltip
                 contentStyle={{ background: '#0f172a', border: '1px solid #334155', borderRadius: 8 }}
                 itemStyle={{ color: '#fff' }}
-                formatter={(v: number) => [v, 'estações']}
+                formatter={(v) => [Number(v), 'estações']}
                 cursor={{ stroke: '#64748b', strokeWidth: 1 }}
               />
               <Bar dataKey="count" radius={[6, 6, 0, 0]}>
@@ -257,7 +257,7 @@ export function ClassificadorPage() {
                       <Tooltip
                         contentStyle={{ background: '#0f172a', border: '1px solid #334155', borderRadius: 8 }}
                         itemStyle={{ color: '#fff' }}
-                        formatter={(v: number) => [v?.toFixed(1), 'Risk Score']}
+                        formatter={(v) => [Number(v).toFixed(1), 'Risk Score']}
                         cursor={{ stroke: '#64748b', strokeWidth: 1 }}
                       />
                       <Line type="monotone" dataKey="risk" stroke={selectedCfg.fill} strokeWidth={2} dot={false} activeDot={{ r: 4, fill: '#fff' }} />

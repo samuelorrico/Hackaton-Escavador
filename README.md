@@ -82,6 +82,26 @@ O `Makefile` na raiz consolida os comandos de setup, dev e testes.
 
 `make dev` abre back e front em **duas janelas** (usa `start` do Windows). Em git-bash/WSL, rode `make dev-back` e `make dev-front` em terminais separados.
 
+> **Build do frontend:** `make build` usa `vite build` direto. O `npm run build`
+> (com `tsc -b`) falha por erros de tipo pré-existentes que não afetam o bundle.
+
+---
+
+## Deploy
+
+Publicação com **URL pública única, grátis** (Hugging Face Spaces via Docker) —
+um container serve a API (`/api/*`) e o frontend React juntos. O banco de 626 MB
+**não** vai ao deploy; só os artefatos pré-treinados (~164 MB).
+
+```bash
+make train          # gera os artefatos (precisa do banco local)
+make docker-build   # builda a imagem de URL única
+make docker-run     # testa em http://localhost:7860
+```
+
+Passo a passo completo (HF Spaces + Git LFS) e a alternativa **frontend na Vercel +
+backend separado** estão em [docs/deploy.md](docs/deploy.md).
+
 ---
 
 ## Estrutura
@@ -90,7 +110,7 @@ O `Makefile` na raiz consolida os comandos de setup, dev e testes.
 assets/                   banco_de_dados.db (não versionado)
 backend/
   data/
-    loader.py             leitura SQLite + feature engineering
+    pipeline.py           leitura SQLite + limpeza + tipagem
     features.py           acumulados de chuva, deltas, z-scores
     store.py              estado global dos dados em memória
   models/

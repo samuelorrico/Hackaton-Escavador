@@ -1,4 +1,5 @@
 import type { RiskLevel, AnomalyLabel } from '../lib/utils'
+export type { RiskLevel, AnomalyLabel } from '../lib/utils'
 
 export interface DashboardSummary {
   total_stations: number

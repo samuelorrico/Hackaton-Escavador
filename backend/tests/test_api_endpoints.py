@@ -83,7 +83,7 @@ def test_health_returns_200(client):
 
 
 def test_dashboard_summary_has_required_fields(client):
-    r = client.get("/dashboard/summary")
+    r = client.get("/api/dashboard/summary")
     assert r.status_code == 200
     data = r.json()
     for field in ["total_stations", "critical_stations", "high_risk_stations",
@@ -93,7 +93,7 @@ def test_dashboard_summary_has_required_fields(client):
 
 
 def test_stations_list_returns_all(client):
-    r = client.get("/stations")
+    r = client.get("/api/stations")
     assert r.status_code == 200
     data = r.json()
     assert len(data) == N_STATIONS
@@ -103,7 +103,7 @@ def test_stations_list_returns_all(client):
 
 
 def test_station_detail_has_risk_factors(client):
-    r = client.get("/stations/A401")
+    r = client.get("/api/stations/A401")
     assert r.status_code == 200
     data = r.json()
     assert "risk_factors" in data
@@ -113,8 +113,8 @@ def test_station_detail_has_risk_factors(client):
 
 
 def test_history_respects_days_param(client):
-    r30 = client.get("/stations/A401/history?days=30")
-    r7 = client.get("/stations/A401/history?days=7")
+    r30 = client.get("/api/stations/A401/history?days=30")
+    r7 = client.get("/api/stations/A401/history?days=7")
     assert r30.status_code == 200
     assert r7.status_code == 200
     # 30-day window should have >= 7-day window results
@@ -122,21 +122,21 @@ def test_history_respects_days_param(client):
 
 
 def test_invalid_station_returns_404(client):
-    r = client.get("/stations/ZZZZ")
+    r = client.get("/api/stations/ZZZZ")
     assert r.status_code == 404
 
 
 def test_all_endpoints_respond_under_200ms(client):
     endpoints = [
         "/health",
-        "/dashboard/summary",
-        "/dashboard/risk-ranking",
-        "/stations",
-        "/stations/A401",
-        "/stations/A401/history",
-        "/radar/ranking",
-        "/risk/distribution",
-        "/clusters",
+        "/api/dashboard/summary",
+        "/api/dashboard/risk-ranking",
+        "/api/stations",
+        "/api/stations/A401",
+        "/api/stations/A401/history",
+        "/api/radar/ranking",
+        "/api/risk/distribution",
+        "/api/clusters",
     ]
     for ep in endpoints:
         t0 = time.time()

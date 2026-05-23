@@ -1,0 +1,21 @@
+# Dados brutos pesados — NÃO precisam no runtime (só geram os artefatos)
+assets/*.db
+assets/*.db-shm
+assets/*.db-wal
+assets/*.csv
+
+# Dependências e builds reconstruídos dentro da imagem
+frontend/node_modules/
+frontend/dist/
+.venv/
+
+# Caches e metadados
+**/__pycache__/
+**/*.pyc
+.pytest_cache/
+.git/
+.claude/
+.agents/
+.cursor/
+.windsurf/
+.codex

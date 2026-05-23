@@ -12,7 +12,7 @@ import { ErrorMessage } from '../components/ui/ErrorMessage'
 import { InfoTooltip } from '../components/ui/InfoTooltip'
 import { Card, SectionHeader } from '../components/ui/Card'
 import type { StationDetail, StationHistory } from '../types/api'
-import { formatScore } from '../lib/utils'
+import type { RiskLevel } from '../lib/utils'
 
 const READING_CONFIG = [
   {
@@ -120,7 +120,7 @@ function ReadingCard({ cfg, value }: { cfg: typeof READING_CONFIG[0]; value: num
   )
 }
 
-function RiskScoreRing({ score, level }: { score: number; level: string }) {
+function RiskScoreRing({ score, level }: { score: number; level: RiskLevel }) {
   const cfg = RISK_EXPLANATION[level] ?? RISK_EXPLANATION.baixo
   const circumference = 2 * Math.PI * 40
   const offset = circumference - (score / 100) * circumference
@@ -302,7 +302,7 @@ export function StationPage() {
                 contentStyle={{ background: '#0f172a', border: '1px solid #334155', borderRadius: 8 }}
                 labelStyle={{ color: '#94a3b8' }}
                 itemStyle={{ color: '#fff' }}
-                formatter={(v: number) => [v.toFixed(1), 'Risk Score']}
+                formatter={(v) => [Number(v).toFixed(1), 'Risk Score']}
                 cursor={{ stroke: '#64748b', strokeWidth: 1 }}
               />
               <Line type="monotone" dataKey="risk" stroke="#3b82f6" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: '#fff' }} />

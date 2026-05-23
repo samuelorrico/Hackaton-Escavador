@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { RadarChart, PolarGrid, PolarAngleAxis, Radar, ResponsiveContainer, Tooltip } from 'recharts'
 import { GitMerge, Users, TrendingUp, AlertCircle, CheckCircle, ArrowLeft, Droplets, Sun, Mountain, Wind, Cloud } from 'lucide-react'
@@ -160,7 +159,6 @@ function ClusterDetailView({ clusterId }: { clusterId: number }) {
   if (error) return <ErrorMessage message={`Erro: ${error}`} />
   if (!cluster) return null
 
-  const color = CLUSTER_COLORS[clusterId % CLUSTER_COLORS.length]
   const meta = getClusterMeta(cluster.label)
   const MetaIcon = meta.Icon
 

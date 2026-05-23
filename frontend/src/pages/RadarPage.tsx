@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
-import { Radar as RadarIcon, AlertTriangle, CheckCircle, Zap } from 'lucide-react'
+import { Radar as RadarIcon, AlertTriangle, CheckCircle, Zap, type LucideIcon } from 'lucide-react'
 import { useApi } from '../hooks/useApi'
 import { LoadingSpinner } from '../components/ui/LoadingSpinner'
 import { ErrorMessage } from '../components/ui/ErrorMessage'
@@ -9,7 +9,16 @@ import { InfoTooltip } from '../components/ui/InfoTooltip'
 import { Card, PageHeader, SectionHeader } from '../components/ui/Card'
 import type { RadarRankingItem, AnomalyLabel } from '../types/api'
 
-const ANOMALY_CONFIG = {
+type AnomalyCfg = {
+  badge: string
+  border: string
+  icon: LucideIcon
+  iconColor: string
+  label: string
+  desc: string
+}
+
+const ANOMALY_CONFIG: Record<AnomalyLabel, AnomalyCfg> = {
   normal:  {
     badge: 'bg-slate-600 text-slate-200',
     border: 'border-l-slate-500',
@@ -70,7 +79,7 @@ export function RadarPage() {
     filter === 'todos' ? true : s.anomaly_label === filter
   ) ?? []
 
-  const counts = {
+  const counts: Record<AnomalyLabel, number> = {
     normal:  ranking?.filter(s => s.anomaly_label === 'normal').length ?? 0,
     atípico: ranking?.filter(s => s.anomaly_label === 'atípico').length ?? 0,
     extremo: ranking?.filter(s => s.anomaly_label === 'extremo').length ?? 0,
@@ -209,7 +218,7 @@ export function RadarPage() {
                         <Tooltip
                           contentStyle={{ background: '#0f172a', border: '1px solid #334155', borderRadius: 8 }}
                           itemStyle={{ color: '#fff' }}
-                          formatter={(v: number) => [v?.toFixed(3), 'Anomaly Score']}
+                          formatter={(v) => [Number(v).toFixed(3), 'Anomaly Score']}
                           cursor={{ stroke: '#64748b', strokeWidth: 1 }}
                         />
                         <Line type="monotone" dataKey="score" stroke="#ef4444" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: '#fff' }} />

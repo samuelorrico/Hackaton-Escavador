@@ -44,9 +44,9 @@ describe('DashboardPage', () => {
   it('renders 4 metric cards after loading', async () => {
     renderPage()
     await waitFor(() => expect(screen.getByText('48')).toBeTruthy())
-    expect(screen.getByText(/total.*esta/i)).toBeTruthy()
-    expect(screen.getByText(/cr[ií]ticas/i)).toBeTruthy()
-    expect(screen.getByText(/cidades/i)).toBeTruthy()
+    expect(screen.getByText('Estações')).toBeTruthy()
+    expect(screen.getByText('Críticas')).toBeTruthy()
+    expect(screen.getByText('Cidades em alerta')).toBeTruthy()
   })
 
   it('risk ranking has 10 rows', async () => {

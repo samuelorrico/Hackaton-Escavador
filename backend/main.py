@@ -2,12 +2,14 @@ import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 
 DB_PATH = os.environ.get("DB_PATH", "assets/banco_de_dados.db")
 ANOMALY_DIR = os.environ.get("ANOMALY_DIR", "backend/models/artifacts/isolation_forest")
 CLUSTERING_DIR = os.environ.get("CLUSTERING_DIR", "backend/models/artifacts/clustering")
 FEATURES_CACHE = os.environ.get("FEATURES_CACHE", "backend/models/artifacts/features_cache.parquet")
+FRONTEND_DIST = os.environ.get("FRONTEND_DIST", "frontend/dist")
 _SKIP_STARTUP = os.environ.get("SKIP_STARTUP", "0") == "1"
 
 _startup_progress = {"pct": 0, "stage": "Aguardando...", "done": False}
@@ -111,8 +113,9 @@ app.add_middleware(
 @app.middleware("http")
 async def require_store_loaded(request: Request, call_next):
     from backend.data.store import store
-    skip = request.url.path in ("/health", "/startup-progress")
-    if not skip and not store.loaded:
+    # Só a API depende do store carregado. SPA, /health e /startup-progress
+    # passam sempre, para a tela de loading conseguir renderizar durante o boot.
+    if request.url.path.startswith("/api") and not store.loaded:
         return JSONResponse(status_code=503, content={"error": "loading", "pct": _startup_progress["pct"], "stage": _startup_progress["stage"]})
     return await call_next(request)
 
@@ -144,9 +147,34 @@ async def health():
 
 from backend.routes import dashboard, stations, cities, radar, risk, clusters
 
-app.include_router(dashboard.router, prefix="/dashboard")
-app.include_router(stations.router, prefix="/stations")
-app.include_router(cities.router, prefix="/cities")
-app.include_router(radar.router, prefix="/radar")
-app.include_router(risk.router, prefix="/risk")
-app.include_router(clusters.router, prefix="/clusters")
+app.include_router(dashboard.router, prefix="/api/dashboard")
+app.include_router(stations.router, prefix="/api/stations")
+app.include_router(cities.router, prefix="/api/cities")
+app.include_router(radar.router, prefix="/api/radar")
+app.include_router(risk.router, prefix="/api/risk")
+app.include_router(clusters.router, prefix="/api/clusters")
+
+
+# --- Servir o frontend buildado (deploy de URL única) ---
+# Só ativa se o build existir (FRONTEND_DIST). Em dev local não há dist,
+# então o backend roda igual a antes e o Vite serve o frontend.
+if os.path.isdir(FRONTEND_DIST):
+    _assets_dir = os.path.join(FRONTEND_DIST, "assets")
+    if os.path.isdir(_assets_dir):
+        app.mount("/assets", StaticFiles(directory=_assets_dir), name="assets")
+
+    _DIST_ROOT = os.path.realpath(FRONTEND_DIST)
+    _INDEX_HTML = os.path.join(_DIST_ROOT, "index.html")
+
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        # /api/* inexistente continua sendo 404 JSON, não SPA.
+        if full_path.startswith("api"):
+            return JSONResponse(status_code=404, content={"error": "not found"})
+        # Serve um arquivo real só se ele estiver contido em dist/ (evita
+        # path traversal tipo ../../etc/passwd); senão, devolve o SPA.
+        if full_path:
+            target = os.path.realpath(os.path.join(_DIST_ROOT, full_path))
+            if (target == _DIST_ROOT or target.startswith(_DIST_ROOT + os.sep)) and os.path.isfile(target):
+                return FileResponse(target)
+        return FileResponse(_INDEX_HTML)
