@@ -5,6 +5,9 @@ Plataforma de monitoramento climático inteligente para a Bahia.
 
 Transforma 5,2 milhões de registros históricos de 48 estações INMET em alertas operacionais de risco climático — 100% offline, sem APIs externas.
 
+**🌐 Demo ao vivo:** https://samuelorrico-guardiaoai.hf.space
+*(primeiro acesso leva ~1 min carregando os dados)*
+
 ---
 
 ## Módulos
@@ -30,7 +33,10 @@ Transforma 5,2 milhões de registros históricos de 48 estações INMET em alert
 
 ---
 
-## Como rodar
+## Rodar localmente
+
+> A demo já está [no ar](https://samuelorrico-guardiaoai.hf.space). Os passos abaixo são para
+> desenvolvimento ou como alternativa offline.
 
 ### Requisitos
 
